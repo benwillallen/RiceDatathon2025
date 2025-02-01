@@ -11,8 +11,8 @@ def create_cross_out(vmobject, col="#ff5555", stroke_width=10):
 
 
 def set_defaults(plane=True):
-    Text.set_default(font='Futura Std Medium', color="#21201e")
-    Paragraph.set_default(font='Futura Std Medium', color="#21201e", line_spacing=1)
+    Text.set_default(font='Bahnschrift', color="#21201e")
+    Paragraph.set_default(font='Bahnschrift', color="#21201e", line_spacing=1)
     SurroundingRectangle.set_default(color="#007991", stroke_width=7, fill_color=WHITE, fill_opacity=0.1, buff=0.2)
     MathTex.set_default(color="#21201e")
     Arrow.set_default(color="#F17105", buff=0.2, max_stroke_width_to_length_ratio=10, max_tip_length_to_length_ratio=0.3)
