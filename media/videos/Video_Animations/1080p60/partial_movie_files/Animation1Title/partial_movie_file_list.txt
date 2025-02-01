@@ -1,0 +1,3 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/jackt/OneDrive/Documents/College_Work/2024-2025/DSCI435/RiceDatathon2025/media/videos/Video_Animations/1080p60/partial_movie_files/Animation1Title/2972826260_2806431280_2952709201.mp4'
+file 'file:C:/Users/jackt/OneDrive/Documents/College_Work/2024-2025/DSCI435/RiceDatathon2025/media/videos/Video_Animations/1080p60/partial_movie_files/Animation1Title/1930252011_958405281_3048571352.mp4'

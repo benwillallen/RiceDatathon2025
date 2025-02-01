@@ -1,0 +1,122 @@
+---
+title: "EEG EDA Notebook"
+author: "Benjamin Allen,"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(skimr)
+library(tidymodels)
+library(xgboost)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Import Data
+
+```{r}
+eeg_dat <- read_csv("../Data/Train_and_Validate_EEG.csv")
+eeg_dat_test <- read_csv("../Data/Test_Set_EEG.csv")
+eeg_dat_full <- read_csv("../Data/EEG.machinelearing_data_BRMH.csv")
+```
+
+### Data Exploration
+
+#### Overview
+
+```{r}
+skim(eeg_dat)
+```
+
+### Test Model
+
+#### Train-Valid Split
+
+```{r}
+# We will make a 80-20 split of the training data
+set.seed(123)
+train_test_split <- initial_split(eeg_dat, prop = 0.8, strata = "specific.disorder")
+
+eeg_train <- training(train_test_split)
+eeg_valid <- testing(train_test_split)
+eeg_cv <- vfold_cv(eeg_train, v = 5)
+```
+
+
+#### Preprocessing
+
+```{r}
+eeg_train <- eeg_train %>% 
+  dplyr::select(-`...123`) %>% 
+  mutate(education = ifelse(is.na(education), mean(education, na.rm = TRUE), education),
+         IQ = ifelse(is.na(IQ), mean(IQ, na.rm = TRUE), IQ)) %>% 
+  mutate(sex = ifelse(sex == "M", 0, 1)) %>% 
+  na.omit()
+
+eeg_valid <- eeg_valid %>% 
+  dplyr::select(-`...123`) %>% 
+  mutate(education = ifelse(is.na(education), mean(education, na.rm = TRUE), education),
+         IQ = ifelse(is.na(IQ), mean(IQ, na.rm = TRUE), IQ)) %>% 
+  mutate(sex = ifelse(sex == "M", 0, 1)) %>% 
+  na.omit()
+```
+
+##### Dimensionality Reduction
+
+```{r}
+eeg_train_umap <- umap(eeg_train %>% dplyr::select(-c(main.disorder, specific.disorder, eeg.date, ID)),
+                       n_components = 3, n_neighbors = 15, random_state = 24, transform_state = 25, n_epochs = 200)
+embedding_train <- as_tibble(eeg_train_umap$layout) %>% 
+  bind_cols(eeg_train %>% dplyr::select(main.disorder, specific.disorder, eeg.date, ID))
+
+embedding_valid <- predict(eeg_train_umap, data = eeg_valid %>% dplyr::select(-c(main.disorder, specific.disorder, eeg.date, ID))) %>% 
+  as.data.frame() %>% 
+  bind_cols(eeg_valid %>% dplyr::select(main.disorder, specific.disorder, eeg.date, ID))
+```
+
+
+#### Recipe
+
+```{r}
+eeg_recipe <- recipe(main.disorder ~ ., data = embedding_train) %>% 
+  update_role(ID, new_role = "id") %>%
+  update_role(specific.disorder, eeg.date, new_role = "misc") %>%
+  step_normalize(all_predictors()) %>% 
+  step_corr(all_predictors())
+```
+
+#### Workflow + Model
+
+```{r}
+eeg_xg_model <- boost_tree() %>% 
+  set_engine("xgboost") %>% 
+  set_mode("classification")
+
+eeg_xg_model <- multinom_reg(penalty = 5) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+# eeg_xg_model <- discrim_linear() %>%
+#   set_engine("MASS") %>%
+#   set_mode("classification")
+
+eeg_workflow <- workflow() %>% 
+  add_recipe(eeg_recipe) %>% 
+  add_model(eeg_xg_model)
+```
+
+#### Fit Model
+
+```{r}
+eeg_fit <- fit(eeg_workflow, data = embedding_train)
+```
+
+#### Predict and Evaluate Model
+
+```{r}
+eeg_preds <- augment(eeg_fit, embedding_valid)
+
+eeg_preds %>% mutate(main.disorder = as.factor(main.disorder)) %>% conf_mat(main.disorder, .pred_class) %>% summary()
+```
+
