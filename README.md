@@ -11,5 +11,22 @@ After data cleaning and exploratory data analysis, we trained and evaluated the 
 
 We started with classical machine learning models, including tree-based models such as random forest and light gradient-boosting machine (LightGBM). Then, we moved on to more complex neural networks.
 
+## Getting Started
+Install required Python packages with the following commands:
+```
+pip install pandas
+pip install numpy
+pip install matplotlib
+pip install scikit-learn
+pip install mne
+pip install torch
+pip install torchviz
+pip install torch
+pip install torchsummary
+pip install torch_geometric
+pip install imblearn
+pip install lightgbm
+```
+
 ## Contributors
 Ben Allen, Jonathan Mak, Ian Rundle, Lauren Yu (Rice University)
