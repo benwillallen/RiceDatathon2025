@@ -28,5 +28,16 @@ pip install imblearn
 pip install lightgbm
 ```
 
+## Model
+Our highest performing model was in `gnn5.ipynb`, a combination of a graph convolutional neural network and a standard convolutional neural network. This consisted of the following components:
+
+- Six graph neural networks for each band, with edges connecting the locations with the maximum average coherence on that band. Power density values were convolved across these edges to create 128 features each.
+- Six standard convolutional neural networks for each band. These processed the raw coherence (COH) data in a 19x19 table for each band, turning them into features to be concatenated with their respected graph neural net features
+- Each band's concatenated results were put through a dense layer before all bands were concatenated for further processing by dense layers.
+- The output is 7 logits that can be used to determine mental illness with a `~38.5%` test accuracy!
+
+## Innovative Design
+We used our domain-specific knowledge by using the average coherence values to give the graph networks an idea of the physical structure of the brain and how components with high coherence interact with each other. Therefore, learnable structures would likely be found across these edges. Additionally, since the coherence grid also contains spatial data because of the ordering of the electrodes, using a convolutional neural network to find coherence structures also made sense.
+
 ## Contributors
 Ben Allen, Jonathan Mak, Ian Rundle, Lauren Yu (Rice University)
