@@ -218,28 +218,127 @@ class Animation4DataDescription(Scene):
         self.wait(1)
 
 
-class Animation5DataCleaning(Scene):
+class Animation5DataCleaningFeatureEngineering(Scene):
     def construct(self):
         b_plane = set_defaults()
+        self.add(b_plane)
         # Dropped rows with missing data, normalization, etc.
+        dc_title = Text("Data Cleaning", font_size=50).shift(2.5 * UP)
+        dc_title_border = SurroundingRectangle(dc_title, buff=0.25, stroke_width=10, fill_opacity=0.5)
+        dc_text = Paragraph("1. Dropped 24 Rows Containing NA Values",
+                            "2. ",
+                            "3. Standardized Data",
+                            t2c={"Electroencephalogram (EEG)": "#D62828", "~14.3%": "#D62828"},
+                            font_size=35).shift(DOWN)
 
-
-class Animation6FeatureEngineering(Scene):
-    def construct(self):
-        b_plane = set_defaults()
+        # Feature Engineering
         # SMOTE, PCA, etc. (can include mathematical/visual descriptions of these methods
+        fe_title = Text("Feature Engineering", font_size=50).shift(2.5 * UP)
+        fe_title_border = SurroundingRectangle(fe_title, buff=0.25, stroke_width=10, fill_opacity=0.5)
+        fe_text = Paragraph("1. Synthetic Minority Over-sampling Technique (SMOTE)",
+                            "2. Accurate, early identification is invaluable in treatment",
+                            "3. Electroencephalogram (EEG) analysis has shown promise",
+                            t2c={"Electroencephalogram (SMOTE)": "#D62828", "~14.3%": "#D62828"},
+                            font_size=35).shift(DOWN)
 
 
 class Animation7Modeling(Scene):
     def construct(self):
         b_plane = set_defaults()
+        self.add(b_plane)
         # Similar to last year, although it may make more sense to have a horizontal pipeline (also include images on
         # boxes)
+        model_text = Text("Full Model Architecture", font_size=50, color="#FEE20B") \
+            .shift(3.5 * UP)
+        df1_text = Paragraph("Preprocessed", "Dataframe", font_size=35)
+        df2_text = Paragraph("Standardized", "Dataframe", font_size=35)
+        dfs_group = VGroup(df2_text, df1_text).arrange(buff=2).shift(2 * UP)
+        df1_box = SurroundingRectangle(df1_text, stroke_color="#C3423F", fill_color="#C3423F")
+        df2_box = SurroundingRectangle(df2_text, stroke_color="#C3423F", fill_color="#C3423F")
+        xg1_text = Paragraph("General", "XGBoost", font_size=35).scale(0.75)
+        xg2_text = Paragraph("Small-Value", "XGBoost", font_size=35).scale(0.75)
+        xg3_text = Paragraph("Large-Value", "XGBoost", font_size=35).scale(0.75)
+        xg4_text = Paragraph("Extreme-Value", "XGBoost", font_size=35).scale(0.75)
+        xg_group = VGroup(xg4_text, xg3_text, xg2_text, xg1_text).arrange(buff=0.65, direction=LEFT)
+        nn_text = Paragraph("Neural", "Network", font_size=35).scale(0.75)
+        model_group = VGroup(xg_group, nn_text).arrange(buff=0.85, direction=LEFT).next_to(dfs_group, DOWN) \
+            .shift(1.25 * DOWN)
+        xg1_box = SurroundingRectangle(xg1_text, stroke_color="#5BC0EB", fill_color="#5BC0EB")
+        xg2_box = SurroundingRectangle(xg2_text, stroke_color="#5BC0EB", fill_color="#5BC0EB")
+        xg3_box = SurroundingRectangle(xg3_text, stroke_color="#5BC0EB", fill_color="#5BC0EB")
+        xg4_box = SurroundingRectangle(xg4_text, stroke_color="#5BC0EB", fill_color="#5BC0EB")
+        nn_box = SurroundingRectangle(nn_text, stroke_color="#F17105", fill_color="#F17105")
+        blend_text = Paragraph("XGBoost", "Blender", font_size=35).next_to(model_group, DOWN).shift(DOWN)
+        blend_box = SurroundingRectangle(blend_text, stroke_color="#FEE20B", fill_color="#FEE20B")
+        arrow1 = CurvedArrow(start_point=df1_box.get_bottom(), end_point=xg1_box.get_top(), angle=PI / 8,
+                             color="#5BC0EB")
+        arrow2 = CurvedArrow(start_point=df1_box.get_bottom(), end_point=xg2_box.get_top(), angle=PI / 8,
+                             color="#5BC0EB")
+        arrow3 = CurvedArrow(start_point=df1_box.get_bottom(), end_point=xg3_box.get_top(), angle=PI / 8,
+                             color="#5BC0EB")
+        arrow4 = CurvedArrow(start_point=df1_box.get_bottom(), end_point=xg4_box.get_top(), angle=PI / 8,
+                             color="#5BC0EB")
+        arrow5 = CurvedArrow(start_point=df2_box.get_bottom(), end_point=nn_box.get_top(), angle=PI / 8)
+        arrow7 = CurvedArrow(start_point=xg1_box.get_bottom(), end_point=blend_box.get_top(), angle=PI / 8,
+                             color="#FEE20B")
+        arrow8 = CurvedArrow(start_point=xg2_box.get_bottom(), end_point=blend_box.get_top(), angle=PI / 8,
+                             color="#FEE20B")
+        arrow9 = CurvedArrow(start_point=xg3_box.get_bottom(), end_point=blend_box.get_top(), angle=-PI / 8,
+                             color="#FEE20B")
+        arrow10 = CurvedArrow(start_point=xg4_box.get_bottom(), end_point=blend_box.get_right(), angle=-PI / 4,
+                              color="#FEE20B")
+        arrow11 = CurvedArrow(start_point=nn_box.get_bottom(), end_point=blend_box.get_left(), color="#FEE20B")
+        arrow_group = VGroup(arrow1, arrow2, arrow3, arrow4,
+                             arrow5, arrow7, arrow8,
+                             arrow9, arrow10, arrow11)
+        box_group = VGroup(blend_box, nn_box, xg1_box, xg2_box, xg3_box, xg4_box, df1_box, df2_box)
+        df_highlight = SurroundingRectangle(dfs_group, buff=0.25, stroke_color="#FEE20B", fill_color="#FEE20B")
+        xg_highlight = SurroundingRectangle(xg_group, buff=0.25, stroke_color="#FEE20B", fill_color="#FEE20B")
+        nn_highlight = SurroundingRectangle(nn_text, stroke_color="#FEE20B", fill_color="#FEE20B", buff=0.25)
+        df_info_rect = Rectangle(stroke_color="#fff0d5", fill_color="#211A1E", fill_opacity=0.85, height=7,
+                                 width=4).shift(5 * RIGHT)
+        df1_title = Text("Preprocessed").next_to(df_info_rect.get_top(), DOWN).scale(0.75)
+        df1_info = Paragraph("- MICE Imputation",
+                             "- One-Hot Encoding",
+                             "- Horizontal Dist. Var.",
+                             "- Outliers Removed",
+                             line_spacing=2).next_to(df1_title, DOWN).scale(0.5)
+        df2_title = Text("Standardized").next_to(df_info_rect.get_top(), DOWN).scale(0.75)
+        df2_info = Paragraph("- Used TensorFlow",
+                             "- Gaussian Proximity",
+                             "- Horizontal Dist. Var.",
+                             "- Normalized Data",
+                             line_spacing=2).next_to(df2_title, DOWN).scale(0.5)
+        self.play(Write(model_text), Write(box_group), Write(dfs_group), Write(model_group), Write(blend_text),
+                  Write(arrow_group))
+        self.wait(3)
+        self.play(DrawBorderThenFill(df_highlight))
+        self.wait(1)
+        self.play(FadeIn(df_info_rect, df1_info, df1_title, shift=LEFT))
+        self.wait(1)
+        self.play(ReplacementTransform(df1_info, df2_info), ReplacementTransform(df1_title, df2_title))
+        self.wait(1)
+        self.play(FadeOut(df_info_rect, df2_info, df2_title, shift=RIGHT))
+        self.wait(1)
+        self.play(DrawBorderThenFill(xg_highlight), Unwrite(df_highlight))
+        self.wait(1)
+        self.play(DrawBorderThenFill(nn_highlight), Unwrite(xg_highlight))
+        self.wait(1)
+        self.play(Unwrite(model_text, run_time=1), Unwrite(box_group, run_time=1),
+                  Unwrite(dfs_group, run_time=1), Unwrite(model_group, run_time=1),
+                  Unwrite(blend_text, run_time=1), Unwrite(arrow_group, run_time=1),
+                  Unwrite(nn_highlight, run_time=1))
+        self.wait(1)
 
 
 class Animation8Evaluation(Scene):
     def construct(self):
         b_plane = set_defaults()
+        self.add(b_plane)
+        accuracy_formula = MathTex("\\frac{TP+TN}{TP+TN+FP+FN}")
+        precision_formula = MathTex("\\frac{TP}{TP+FP}")
+        recall_formula = MathTex("\\frac{TP}{TP+FN}")
+        f1_formula = MathTex("\\frac{2\\cdot Precision\\cdot Recall}{Precision+Recall}")
         # Describe how model was evaluated (can be skipped for time) and how the model did (accuracy, precision, recall,
         # and most importantly confusion matrix)
 
@@ -247,12 +346,34 @@ class Animation8Evaluation(Scene):
 class Animation9InsightsConclusion(Scene):
     def construct(self):
         b_plane = set_defaults()
+        self.add(b_plane)
         # Include any cool visualizations here can move these up if they help explain any of the preprocessing or
         # modeling steps we took
+        # Standard conclusion side with key takeaways and a thank you (mention organizers and neurotech specifically)
+        # Insights
+        # 1st Insight - PSD Graph from Lauren
 
+        # Conclusion
+        results_title = Text("Final Thoughts", font_size=50, color="#F17105").shift(2.5 * UP)
+        results_text = Paragraph("Our Combined Model Achieved", "a Testing Accuracy of 94.93%!", font_size=60,
+                                 t2c={"94.93%!": "#D62828", "Combined Model": "#D62828"})
+        conc_border = SurroundingRectangle(results_text, buff=0.5)
+        self.play(DrawBorderThenFill(results_title), Write(results_text), DrawBorderThenFill(conc_border))
+        self.wait(1)
+        analysis_text = Paragraph("The vertical depth, location, and horizontal length",
+                                  "were particularly important to our model for predictions.",
+                                  font_size=40, t2c={"vertical depth": " #1B264F", "location": " #1B264F",
+                                                     "horizontal length": " #1B264F"})
+        analysis_border = SurroundingRectangle(analysis_text, buff=0.5)
+        self.play(ReplacementTransform(results_text, analysis_text), ReplacementTransform(conc_border, analysis_border))
+        self.wait(1)
 
-class Animation10Conclusion(Scene):
-    def construct(self):
-        b_plane = set_defaults()
-        # Standard conclusion side with key takeaways and a thank you (mention organizers and neurotech specifically
-
+        # Thank You
+        thanks_text = Paragraph("Thanks to Datathon Organizers", "and Neurotech@Rice!", font_size=60,
+                                gradient=("#D62828", "#0E9594", "#1B264F", "#F17105"))
+        thanks_border = SurroundingRectangle(thanks_text, buff=0.5, stroke_width=15,
+                                             stroke_color=["#D62828", "#0E9594", "#1B264F", "#F17105"],
+                                             fill_color=["#D62828", "#0E9594", "#1B264F", "#F17105"])
+        self.play(ReplacementTransform(analysis_text, thanks_text), FadeOut(results_title, shift=UP),
+                  ReplacementTransform(analysis_border, thanks_border))
+        self.wait(1)

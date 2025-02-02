@@ -18,7 +18,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 eeg_dat <- read_csv("../Data/Train_and_Validate_EEG.csv")
 eeg_dat_test <- read_csv("../Data/Test_Set_EEG.csv")
-eeg_dat_full <- read_csv("../Data/EEG.machinelearing_data_BRMH.csv")
 ```
 
 ### Data Exploration
