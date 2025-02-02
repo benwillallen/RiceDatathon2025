@@ -1,0 +1,100 @@
+DT25 Script
+
+Hello! My name is Ben Allen, and I will presenting our datathon project IntrEEGing NEURONets created by Lauren Yu, Jonathan Mak, Ian Rundle, and me. 
+
+Getting right into it, mental disorders are a major worldwide health problem. In fact, they contributed to about ~14.3% of deaths globally last year.
+
+Early and Accurate diagnosis is vital for patients to be given effective treatments and is invaluable to combat any negative effects.
+
+Electro-en-ceph-a-lo-gram or EEG analysis has recently shown promise in classifying mental disorders.
+
+For some background, EEGs are devices that record brainwave activity over time in a non-invasive manner.
+
+They measure the electrical variations of neurons using electrodes that are located at specific places on a patient's head.
+
+This makes it possible to record activity in the all parts of the brain.
+
+With all of this in mind, the objectives of this project are to first, create a model able to accurately classify mental disorders using EEG data.
+
+Secondly, we want to understand further how differences in EEG readings signal different disorders.
+
+Lastly, we aim to determine which if any disorders can be effectively predicted using EEG data.
+
+--- Data Description
+
+Now getting into our data, we had a data set for Nine Hundred and Forty Five patients with One Thousand One Hundred and Forty Eight columns for each patient.
+
+There were a few columns covering things such as age, sex, IQ, and education level; however, the vast majority of the columns contained power spectral density and coherence readings from doing EEG analysis.
+
+To explain Power Spectral Density or PSD further, first image we have placed electrodes on a patients head in the manner shown here.
+
+The power spectral density measures the strength of an EEG signal within a certain frequency band.
+
+Note that EEG signals are originally time series that are typically then converted into the frequency domain and organized based on predetermined bands of frequency shown here. 
+
+The PSD data is divided into different columns based on these frequency bands.
+
+This means that there is a PSD reading for each frequency band and furthermore for each electrode shown here.
+
+In addition to Power Spectral Density, we also have readings for the coherence between two electrodes which measures how synchronized the two electrodes are with each other.
+
+Given this, this Coherence data is separated into columns by a start and end electrode.
+
+--- Data Cleaning & Feature Engineering
+
+Moving on to data cleaning, we dropped 24 rows with missing value. 
+
+Next, we dropped columns not related to the disorders or EEG signals because our approach focused on capturing spatial relationships between these signals. 
+
+Lastly, we standardized the data to remove any effects of scaling from impacting our models.
+
+Next for feature engineering, we attempted various strategies such as using dimensionality reduction techniques like PCA and UMAP. 
+
+Additionally, we tried using SMOTE in order to reduce the amount of class imbalance. 
+
+Ultimately, our best approach used coherence to structure the data as a graph. 
+
+To do this we first found the maximum coherence across frequency bands and made that the weight of each edge.
+
+Next, we took the 10 highest weighted edges and removed all others.
+
+Finally, we used the pytorch-geometric package to construct a weighted graph for use in our graph neural network.
+
+--- Model Architecture
+
+Speaking of graph neural network, we can now get into our model architecture.
+
+For a quick overview, our best model was a convolutional graph neural network.
+
+This model was able to capture the spatial relationships and was made more effective by taking advantage of the natural graph structure of the electrodes.
+
+The model also include flattening and fully connected layers to reshape the data and make final class probability predictions.
+
+--- Insights & Conclusion
+
+Finishing off, the following chart displays the average PSD by frequency band for each main disorder.
+
+We can see from this chart that higher frequency bands such as the gamma band had a highly concentrated power spectral density on the left or right sides of the head for addictive, OCD, and schizophrenic disorders. 
+
+On the other hand, anxiety disorders tended to have lower density of gamma waves in the front of the head compared to the other diagnoses.
+
+There were patterns for some of the mid-frequency bands; for instance, patients with OCD tended to have a higher density of Alpha waves closer to the back of the head.
+
+To conclude, our project resulted in a Graph Neural Network capable of classifying mental disorders with an accuracy of 38.5%!
+
+Future work may look into adding additional features beyond EEG signals to better classify a diverse array of disorders.
+
+Thank you to the Rice Datathon organizers and NeuroTech@Rice for this opportunity, and thank you for watching!
+
+
+
+
+
+
+
+
+
+
+
+
+
