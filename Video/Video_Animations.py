@@ -15,7 +15,7 @@ config.background_color = "#d9cdb6"
 # BLACK #21201E
 
 
-class Animation1TitleMotivation(Scene):
+class Animation1TitleMotivationObjective(Scene):
     def construct(self):
         b_plane = set_defaults()
         title = Text("Gradient Boosted TrEEGs", font_size=60, t2c={'EEG': "#D62828"})
@@ -37,26 +37,44 @@ class Animation1TitleMotivation(Scene):
                   AnimationGroup(Write(title), DrawBorderThenFill(title_border), Write(datathon_text), Write(by_text),
                                  lag_ratio=0.4))
         self.wait(1)
-        self.play(AnimationGroup(FadeOut(dec_graph, shift=DOWN), FadeOut(dec_graph, shift=DOWN),
-                                 FadeOut(dec_graph, shift=DOWN), lag_ratio=0.4),
-                  Unwrite(title), FadeOut(by_text, shift=DOWN))
+        bg_title = Text("Background", font_size=50).shift(2.5 * UP)
+        bg_title_border = SurroundingRectangle(bg_title, buff=0.25, stroke_width=10, fill_opacity=0.5)
+        self.play(FadeOut(dec_graph, shift=DOWN), FadeOut(datathon_text, shift=UP), dec_graph2.animate.shift(2.5*LEFT),
+                  dec_graph3.animate.shift(2.5*RIGHT), ReplacementTransform(title, bg_title),
+                  ReplacementTransform(title_border, bg_title_border), FadeOut(by_text, shift=DOWN))
 
         # Motivation
         motivation_text = Paragraph("-- Mental health contributes to ~14.3% deaths worldwide",
                                     "-- Accurate, early identification is invaluable in treatment",
-                                    "-- Electroencephalogram (EEG) analysis has recently shown promise",
-                                    t2c={"Electroencephalogram (EEG)": "#D62828", "~14.3%": "#D62828"})
+                                    "-- Electroencephalogram (EEG) analysis has shown promise",
+                                    t2c={"Electroencephalogram (EEG)": "#D62828", "~14.3%": "#D62828"},
+                                    font_size=35).shift(DOWN)
         background_text = Paragraph("-- EEGs record brainwave activity over time",
                                     "-- Measure electrical changes of neurons",
                                     "-- Electrodes located at specific places on patient's head",
-                                    t2c={"EEG": "#D62828"})
-        eeg_image = ImageMobject("ce04b6a2-ed34-4757-8d2a-ba80aa0ab38b.jpg")
+                                    t2c={"EEG": "#D62828", "Electrodes": "#D62828"}, font_size=35).shift(DOWN)
+        self.wait(1)
+        self.play(Write(motivation_text, run_time=2))
+        self.wait(1)
+        self.play(Transform(motivation_text, background_text))
+        self.wait(1)
 
-
-class Animation3Objective(Scene):
-    def construct(self):
-        b_plane = set_defaults()
-        # Potentially bring up both objectives and the results here
+        # Objectives
+        ob_title = Text("Objectives", font_size=50).shift(2.5 * UP)
+        ob_title_border = SurroundingRectangle(ob_title, buff=0.25, stroke_width=10, fill_opacity=0.5)
+        ob_text = Paragraph("-- Create a classification model for mental disorders",
+                            "-- Understand how EEGs can signal different disorders",
+                            "-- Determine which disorders can be effectively modeled",
+                            t2c={"classification model": "#D62828", "which disorders": "#D62828"},
+                            font_size=35).shift(DOWN)
+        self.play(FadeOut(motivation_text, shift=DOWN), ReplacementTransform(bg_title, ob_title),
+                  ReplacementTransform(bg_title_border, ob_title_border))
+        self.wait(1)
+        self.play(Write(ob_text))
+        self.wait(2)
+        self.play(Unwrite(dec_graph2), Unwrite(dec_graph3), FadeOut(ob_title, ob_title_border, shift=2*UP),
+                  Unwrite(ob_text))
+        self.wait(2)
 
 
 class Animation4DataDescription(Scene):
